@@ -1,4 +1,4 @@
-name: Rust Build
+name: CI
 
 on:
   push:
@@ -17,21 +17,26 @@ jobs:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
 
     steps:
-    #- name: Install minimal stable
-    #  uses: dtolnay/rust-toolchain@stable
-    - uses: actions/checkout@v4
+    - name: Checkout
+      uses: actions/checkout@v4  
+
+    - name: Cache rust cargo artifacts
     - uses: Swatinem/rust-cache@v2
-    #- name: Install Protoc
-    # uses: arduino/setup-protoc@v3
-    #  with:
-    #    repo-token: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Install nextest
       uses: taiki-e/install-action@nextest
+
     - name: Build
       run: cargo build --tests --workspace
+
     - name: Run tests
       # Profile "ci" is configured in .config/nextest.toml
       run: cargo nextest run --workspace --profile ci
+      
+    # nextest doesn't run doctests https://github.com/nextest-rs/nextest/issues/16
+    - name: Run doc tests
+      run: cargo test --doc
+
     - name: Upload test report
       uses: actions/upload-artifact@v4
       with:
@@ -99,3 +104,23 @@ jobs:
         with:
           filename: .github/ISSUE_TEMPLATE/flaky_test.md
           update_existing: true
+        
+  # Publish to Crates.io
+  cargo_publish:
+    name: Publish Cargo Package
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout  
+        uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - run: cargo build --release --workspace
+      - run: cargo login $CRATES_MIMEE_TOKEN
+      - run: cargo publish
+    env:
+      CRATES_IO_TOKEN: ${{ secrets.CRATES_MIMEE_TOKEN }}
+  
