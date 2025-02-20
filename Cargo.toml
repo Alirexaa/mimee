@@ -8,6 +8,8 @@ license="MIT"
 repository = "https://github.com/Alirexaa/mimee"
 documentation = "https://docs.rs/mimee/"
 readme = "README.md"
+keywords = ["mime", "extension", "media-types", "filesystem"]
+categories = ["filesystem", "web-programming"]
 
 [dependencies]
 
