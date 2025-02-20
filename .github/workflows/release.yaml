@@ -118,8 +118,7 @@ jobs:
           toolchain: stable
           override: true
       - run: cargo build --release --workspace
-      - run: cargo login $CRATES_MIMEE_TOKEN
-      - run: cargo publish
+      - run: cargo publish --token $CRATES_MIMEE_TOKEN
     env:
-      CRATES_IO_TOKEN: ${{ secrets.CRATES_MIMEE_TOKEN }}
+      CRATES_MIMEE_TOKEN: ${{ secrets.CRATES_MIMEE_TOKEN }}
   
