@@ -563,16 +563,16 @@ impl MimeDict {
     ///
     /// # Arguments
     ///
-    /// * `path` - A `String` representing the file path.
+    /// * `path` - A type that implements `AsRef<str>` representing the file path.
     ///
     /// # Examples
     ///
     /// ```
     /// let mime_dict = mimee::MimeDict::new();
-    /// let content_type = mime_dict.get_content_type("example.txt".to_string());
+    /// let content_type = mime_dict.get_content_type("example.txt");
     /// assert_eq!(content_type, Some("text/plain".to_string()));
     /// ```
-    pub fn get_content_type(&self, path: String) -> Option<String> {
+    pub fn get_content_type<T: AsRef<str>>(&self, path: T) -> Option<String> {
         match MimeDict::get_extention(path) {
             Some(ext) => self.mime_types.get(&ext).cloned(),
             None => None,
@@ -581,9 +581,9 @@ impl MimeDict {
 
     /// Extracts the file extension from a given file path and returns it as an `Option<String>`.
     /// The extension is converted to lowercase. If no extension is found, it returns `None`.
-    fn get_extention(path: String) -> Option<String> {
-        match path.rfind(".") {
-            Some(i) => Some(path[i..].to_string().to_lowercase()),
+    fn get_extention<T: AsRef<str>>(path: T) -> Option<String> {
+        match path.as_ref().rfind(".") {
+            Some(i) => Some(path.as_ref()[i..].to_string().to_lowercase()),
             None => None,
         }
     }
@@ -601,7 +601,7 @@ mod tests {
     #[case("khown.html", "text/html")]
     fn known_extensions_return_some(#[case] input: &str, #[case] expected: &str) {
         let mime_dict = MimeDict::new();
-        let content_type = &mime_dict.get_content_type(String::from(input)).unwrap();
+        let content_type = &mime_dict.get_content_type(input).unwrap();
         assert_eq!(content_type, expected)
     }
 
@@ -610,7 +610,7 @@ mod tests {
     #[case("unkhown.xyz")]
     fn unknown_extensions_return_none(#[case] input: &str) {
         let mime_dict = MimeDict::new();
-        let result = &mime_dict.get_content_type(String::from(input));
+        let result = &mime_dict.get_content_type(input);
         assert_eq!(*result, Option::None);
     }
 
@@ -619,7 +619,7 @@ mod tests {
     #[case("known.exe.config")]
     fn double_dotted_extensions_are_not_supported(#[case] input: &str) {
         let mime_dict = MimeDict::new();
-        let result = &mime_dict.get_content_type(String::from(input));
+        let result = &mime_dict.get_content_type(input);
         assert_eq!(*result, Option::None);
     }
 
@@ -628,7 +628,7 @@ mod tests {
     #[case("known.dvr-ms", "video/x-ms-dvr")]
     fn dahsed_extensions_should_be_matched(#[case] input: &str, #[case] expected: &str) {
         let mime_dict = MimeDict::new();
-        let content_type = &mime_dict.get_content_type(String::from(input)).unwrap();
+        let content_type = &mime_dict.get_content_type(input).unwrap();
         assert_eq!(content_type, expected);
     }
 
@@ -638,7 +638,7 @@ mod tests {
     #[case(r"\second\example.txt", "text/plain")]
     fn both_slash_formats_are_supported(#[case] input: &str, #[case] expected: &str) {
         let mime_dict = MimeDict::new();
-        let content_type = &mime_dict.get_content_type(String::from(input)).unwrap();
+        let content_type = &mime_dict.get_content_type(input).unwrap();
         assert_eq!(content_type, expected);
     }
 
@@ -648,7 +648,7 @@ mod tests {
     #[case(r"\second.css\example.txt", "text/plain")]
     fn dot_in_directories_are_ignored(#[case] input: &str, #[case] expected: &str) {
         let mime_dict = MimeDict::new();
-        let content_type = &mime_dict.get_content_type(String::from(input)).unwrap();
+        let content_type = &mime_dict.get_content_type(input).unwrap();
         assert_eq!(content_type, expected);
     }
 
@@ -658,7 +658,7 @@ mod tests {
         let mime_dict = MimeDict::new();
         let invalid_chars_str: String = get_invalid_path_chars().iter().collect();
         let path: String = [invalid_chars_str, ".txt".to_string()].concat();
-        let content_type = &mime_dict.get_content_type(String::from(path)).unwrap();
+        let content_type = &mime_dict.get_content_type(path).unwrap();
         assert_eq!(content_type, "text/plain");
     }
 
@@ -671,7 +671,7 @@ mod tests {
     #[case("Löwe 老虎 Léopard.html", "text/html")]
     fn none_assci_characters_are_supported(#[case] input: &str, #[case] expected: &str) {
         let mime_dict = MimeDict::new();
-        let content_type = &mime_dict.get_content_type(String::from(input)).unwrap();
+        let content_type = &mime_dict.get_content_type(input).unwrap();
         assert_eq!(content_type, expected)
     }
 }
