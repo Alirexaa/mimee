@@ -573,7 +573,7 @@ impl MimeDict {
     /// assert_eq!(content_type, Some("text/plain".to_string()));
     /// ```
     pub fn get_content_type<T: AsRef<str>>(&self, path: T) -> Option<String> {
-        match MimeDict::get_extention(path) {
+        match MimeDict::get_extension(path) {
             Some(ext) => self.mime_types.get(&ext).cloned(),
             None => None,
         }
@@ -581,7 +581,7 @@ impl MimeDict {
 
     /// Extracts the file extension from a given file path and returns it as an `Option<String>`.
     /// The extension is converted to lowercase. If no extension is found, it returns `None`.
-    fn get_extention<T: AsRef<str>>(path: T) -> Option<String> {
+    fn get_extension<T: AsRef<str>>(path: T) -> Option<String> {
         match path.as_ref().rfind(".") {
             Some(i) => Some(path.as_ref()[i..].to_string().to_lowercase()),
             None => None,
