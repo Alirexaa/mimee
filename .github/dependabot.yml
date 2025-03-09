@@ -1,0 +1,18 @@
+# To get started with Dependabot version updates, you'll need to specify which
+# package ecosystems to update and where the package manifests are located.
+# Please see the documentation for all configuration options:
+# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2  
+updates:  
+  - package-ecosystem: "cargo" # Specify the package manager  
+    directory: "/" # Location of the Cargo.toml file  
+    schedule:  
+      interval: "weekly" # Update schedule: daily, weekly, monthly  
+    commit-message:  
+      prefix: "deps" # Prefix for the commit message  
+    open-pull-requests-limit: 10 # Limit the number of open PRs  
+  - package-ecosystem: "github-actions" # See documentation for possible values
+    directory: "/"
+    schedule:
+      interval: "weekly"
