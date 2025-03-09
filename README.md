@@ -15,7 +15,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-mimee = "0.1.0"
+mimee = "0.2.0"
 ```
 
 ## Usage
@@ -23,9 +23,14 @@ mimee = "0.1.0"
 use mimee::MimeDict;
 
 fn main() {
-    let mime_dict = MimeDict::new();
+    let mut mime_dict = MimeDict::new();
     let content_type = mime_dict.get_content_type("example.txt".to_string());
     println!("MIME type: {:?}", content_type);
+
+    // Adding a custom MIME type
+    mime_dict.add(".custom".to_string(), "application/x-custom".to_string());
+    let custom_content_type = mime_dict.get_content_type("file.custom");
+    println!("Custom MIME type: {:?}", custom_content_type);
 }
 ```
 

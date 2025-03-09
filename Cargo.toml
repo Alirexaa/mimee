@@ -1,6 +1,6 @@
 [package]
 name = "mimee"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 authors = ["Alireza Baloochi <Dev.AlirezaBaloochi@gmail.com>"]
 description = "A simple crate for detection of a file's MIME type by its extension."
