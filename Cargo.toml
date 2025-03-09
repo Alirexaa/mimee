@@ -14,4 +14,4 @@ categories = ["filesystem", "web-programming"]
 [dependencies]
 
 [dev-dependencies]
-rstest = "0.24.0"
+rstest = "0.25.0"
