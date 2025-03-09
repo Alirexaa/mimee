@@ -587,6 +587,28 @@ impl MimeDict {
             None => None,
         }
     }
+
+    /// Adds a new file extension and its corresponding MIME type to the `MimeDict`.
+    ///
+    /// # Arguments
+    ///
+    /// * `extension` - A `String` representing the file extension. The extension should start with a dot (e.g., ".txt").
+    /// * `mime_type` - A `String` representing the MIME type associated with the file extension.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// let mut mime_dict = mimee::MimeDict::new();
+    /// mime_dict.add(".custom".to_string(), "application/x-custom".to_string());
+    /// assert_eq!(mime_dict.get_content_type("file.custom"), Some("application/x-custom".to_string()));
+    /// ```
+    ///
+    /// # Note
+    ///
+    /// The `extension` should start with a dot (e.g., ".txt"). If the extension does not start with a dot, the lookup will not work correctly.
+    pub fn add(&mut self, extension: String, mime_type: String) {
+        self.mime_types.insert(extension, mime_type);
+    }
 }
 
 #[cfg(test)]
@@ -673,5 +695,13 @@ mod tests {
         let mime_dict = MimeDict::new();
         let content_type = &mime_dict.get_content_type(input).unwrap();
         assert_eq!(content_type, expected)
+    }
+
+    #[test]
+    fn add_method_adds_new_extension() {
+        let mut mime_dict = MimeDict::new();
+        mime_dict.add(".custom".to_string(), "application/x-custom".to_string());
+        let content_type = mime_dict.get_content_type("file.custom");
+        assert_eq!(content_type, Some("application/x-custom".to_string()));
     }
 }
