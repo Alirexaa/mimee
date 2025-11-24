@@ -18,7 +18,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v4  
+      uses: actions/checkout@v6  
 
     - name: Cache rust cargo artifacts
       uses: Swatinem/rust-cache@v2
@@ -78,7 +78,7 @@ jobs:
           echo $delimiter >> $GITHUB_OUTPUT
       - name: pull issue template
         if: ${{ steps.process-test-report.outputs.has_flaky_tests == 'true' }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           sparse-checkout: |
             .github/ISSUE_TEMPLATE/flaky_test.md
